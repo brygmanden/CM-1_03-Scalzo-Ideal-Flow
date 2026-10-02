@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Ideal Flow</title>
+<style>
+@font-face{font-family:"Head";src:url("https://www.baristahustle.com/webfont/Head-Bold.ttf") format("truetype");font-weight:700;font-display:block}
+@font-face{font-family:"NoBH";src:url("https://www.baristahustle.com/webfont/NoBH-Bold.ttf") format("truetype");font-weight:700;font-display:block}
+@font-face{font-family:"NoBH";src:url("https://www.baristahustle.com/webfont/NoBH-Regular.ttf") format("truetype");font-weight:400;font-display:block}
+/* Layout: fluid stage sized by container width. Wide (2000x800): title above five steps in a row.
+   Mobile (600px and below): title above five steps stacked, joined by down arrows. */
+:root{
+  --bg:#161d20;
+  --panel:#1d2629;
+  --line:#33403f;
+  --fg:#f4f4f4;
+  --muted:#93a0a3;
+  --accent:#c73353;
+  --head:"Head", Arial, sans-serif;
+  --card:"NoBH", Arial, sans-serif;
+  --num:"NoBH", Arial, sans-serif;
+  color-scheme: dark;
+}
+body{margin:0;background:transparent;color:var(--fg);font-family:var(--card);
+  }
+.wrap{width:100%;max-width:2000px;margin-inline:auto;container-type:inline-size}
+.stage{position:relative;width:100%;box-sizing:border-box;background:var(--bg);border-radius:6px;overflow:hidden;cursor:pointer;
+  display:flex;flex-direction:column;justify-content:center;
+  -webkit-tap-highlight-color:transparent;user-select:none}
+
+/* ---------- Wide: horizontal flow ---------- */
+.stage{padding:6cqw;gap:4.5cqw}
+h1{margin:0;font-family:var(--head);font-weight:700;font-size:2.8cqw;letter-spacing:.01em;line-height:1}
+h1 .ch{display:inline-block;opacity:0;transform:translateY(.3em)}
+h1 .ch.sp{display:inline}
+h1 .ch.on{opacity:1;transform:none;transition:opacity .35s ease, transform .5s cubic-bezier(.2,.8,.2,1)}
+
+.flow{display:flex;align-items:stretch}
+.step{flex:1 1 0;min-width:0;padding:1.7cqw 1.4cqw 1.8cqw;border-top:3px solid var(--line);
+  opacity:0;transform:translateY(.8cqw);transition:opacity .4s ease, transform .5s cubic-bezier(.2,.8,.2,1), border-color .4s}
+.step.on{opacity:1;transform:none}
+.step.done{border-top-color:var(--fg)}
+.num{font-family:var(--num);font-weight:400;font-size:max(10px,1.1cqw);color:var(--muted);letter-spacing:.12em;margin-bottom:1.1cqw;transition:color .4s}
+.txt{font-family:var(--card);font-size:2.2cqw;font-weight:700;line-height:1.08;min-height:2.2em}
+.txt .ch{opacity:0}
+.txt .ch.on{opacity:1}
+.txt .ch{position:relative}
+.txt .ch.cur::after{content:"";position:absolute;left:100%;top:.12em;margin-left:.05em;width:.09em;height:.9em;background:var(--accent);animation:blink .8s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.step.final{background:var(--panel)}
+.step.final.done{border-top-color:var(--accent)}
+.step.final.done .txt,.step.final.done .num{color:var(--accent)}
+
+.arrow{flex:0 0 3.6cqw;display:flex;justify-content:center;align-items:flex-start;padding-top:4.9cqw}
+.arrow svg{width:2.4cqw;height:1.4cqw;overflow:visible}
+.arrow path{fill:none;stroke:var(--accent);stroke-width:max(2px,.2cqw);stroke-linecap:round;stroke-linejoin:round;
+  vector-effect:non-scaling-stroke;stroke-dasharray:100;stroke-dashoffset:100;transition:stroke-dashoffset .5s cubic-bezier(.6,0,.2,1)}
+.arrow.on path{stroke-dashoffset:0}
+
+/* ---------- Mobile: vertical flow (600px and below) ---------- */
+@container (max-width: 600px){
+  .stage{padding:max(16px,7cqw);gap:max(22px,6cqw)}
+  h1{font-size:max(20px,5.4cqw)}
+  .flow{flex-direction:column}
+  .step{display:flex;align-items:baseline;gap:max(12px,3cqw);padding:max(12px,2.6cqw) max(14px,3cqw);
+    border-top:0;border-left:3px solid var(--line);transform:translateX(-1.5cqw)}
+  .step.on{transform:none}
+  .step.done{border-left-color:var(--fg)}
+  .step.final.done{border-left-color:var(--accent)}
+  .num{font-size:max(11px,2.6cqw);margin:0;flex:none;width:1.6em;font-variant-numeric:tabular-nums}
+  .txt{font-size:max(16px,4.4cqw);min-height:0;line-height:1.2}
+  .arrow{flex:none;padding:0;justify-content:flex-start;padding-left:max(18px,3.6cqw);height:max(26px,5.4cqw);align-items:center}
+  .arrow svg{width:max(16px,3cqw);height:max(22px,4.4cqw)}
+  .arrow path{stroke-width:2.5px}
+}
+
+@media (prefers-reduced-motion: reduce){ .txt .ch.cur::after{animation:none} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="stage" id="stage" role="img" aria-label="The ideal flow: Supplier price changes, then ingredient cost updates, then recipe cost changes, then margin moves outside target, then the team reviews the product. Click to replay.">
+    <h1 id="h1">THE IDEAL FLOW</h1>
+    <div class="flow" id="flow"></div>
+  </div>
+</div>
+
+<script>
+const STEPS = [
+  "Supplier price changes",
+  "Ingredient cost updates",
+  "Recipe cost changes",
+  "Margin moves outside target",
+  "The team reviews the product"
+];
+const stage = document.getElementById('stage');
+const flow = document.getElementById('flow');
+const h1 = document.getElementById('h1');
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const RIGHT = 'M2 14 H40 M30 5 L40 14 L30 23';
+const DOWN  = 'M14 2 V40 M5 30 L14 40 L23 30';
+
+function split(el, text){
+  el.textContent = '';
+  for (const c of text){
+    const s = document.createElement('span');
+    s.className = 'ch' + (c === ' ' ? ' sp' : '');
+    s.textContent = c;
+    el.appendChild(s);
+  }
+  return [...el.children];
+}
+
+function arrowShape(){
+  const vertical = stage.clientWidth <= 600;
+  flow.querySelectorAll('.arrow svg').forEach(svg => {
+    svg.setAttribute('viewBox', vertical ? '0 0 28 42' : '0 0 42 28');
+    svg.querySelector('path').setAttribute('d', vertical ? DOWN : RIGHT);
+  });
+}
+new ResizeObserver(arrowShape).observe(stage);
+
+function build(){
+  flow.innerHTML = '';
+  STEPS.forEach((t, i) => {
+    if (i){
+      const a = document.createElement('div');
+      a.className = 'arrow';
+      a.innerHTML = '<svg preserveAspectRatio="xMidYMid meet"><path pathLength="100"/></svg>';
+      flow.appendChild(a);
+    }
+    const s = document.createElement('div');
+    s.className = 'step' + (i === STEPS.length - 1 ? ' final' : '');
+    s.innerHTML = `<div class="num">${String(i+1).padStart(2,'0')}</div><div class="txt"></div>`;
+    flow.appendChild(s);
+  });
+  arrowShape();
+}
+
+let timers = [];
+const at = (ms, fn) => timers.push(setTimeout(fn, ms));
+
+function play(){
+  timers.forEach(clearTimeout); timers = [];
+  build();
+  const titleChars = split(h1, 'THE IDEAL FLOW');
+  const steps = [...flow.querySelectorAll('.step')];
+  const arrows = [...flow.querySelectorAll('.arrow')];
+  const stepChars = steps.map((s, i) => split(s.querySelector('.txt'), STEPS[i]));
+
+  if (reduce){
+    titleChars.forEach(c => c.classList.add('on'));
+    steps.forEach((s, i) => { s.classList.add('on','done'); stepChars[i].forEach(c => c.classList.add('on')); });
+    arrows.forEach(a => a.classList.add('on'));
+    return;
+  }
+
+  let t = 300;
+  titleChars.forEach((c, i) => at(t + i * 45, () => c.classList.add('on')));
+  t += titleChars.length * 45 + 600;
+
+  steps.forEach((s, i) => {
+    if (i){ const a = arrows[i-1]; at(t, () => a.classList.add('on')); t += 460; }
+    at(t, () => s.classList.add('on'));
+    t += 220;
+    const chars = stepChars[i];
+    chars.forEach((c, j) => at(t + j * 38, () => { if (j) chars[j-1].classList.remove('cur'); c.classList.add('on','cur'); }));
+    t += chars.length * 38 + 160;
+    at(t, () => { chars[chars.length-1].classList.remove('cur'); s.classList.add('done'); });
+    t += 380;
+  });
+  at(t + 4500, play); // loop
+}
+
+stage.addEventListener('click', play);
+(document.fonts ? document.fonts.ready : Promise.resolve()).then(play);
+</script>
+</body>
+</html>

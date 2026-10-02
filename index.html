@@ -4,177 +4,193 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>The Ideal Flow</title>
-<style>
-@font-face{font-family:"Head";src:url("https://www.baristahustle.com/webfont/Head-Bold.ttf") format("truetype");font-weight:700;font-display:block}
-@font-face{font-family:"NoBH";src:url("https://www.baristahustle.com/webfont/NoBH-Bold.ttf") format("truetype");font-weight:700;font-display:block}
-@font-face{font-family:"NoBH";src:url("https://www.baristahustle.com/webfont/NoBH-Regular.ttf") format("truetype");font-weight:400;font-display:block}
-/* Layout: fluid stage sized by container width. Wide (2000x800): title above five steps in a row.
-   Mobile (600px and below): title above five steps stacked, joined by down arrows. */
-:root{
-  --bg:#161d20;
-  --panel:#1d2629;
-  --line:#33403f;
-  --fg:#f4f4f4;
-  --muted:#93a0a3;
-  --accent:#c73353;
-  --head:"Head", Arial, sans-serif;
-  --card:"NoBH", Arial, sans-serif;
-  --num:"NoBH", Arial, sans-serif;
-  color-scheme: dark;
-}
-body{margin:0;background:transparent;color:var(--fg);font-family:var(--card);
-  }
-.wrap{width:100%;max-width:2000px;margin-inline:auto;container-type:inline-size}
-.stage{position:relative;width:100%;box-sizing:border-box;background:var(--bg);border-radius:6px;overflow:hidden;cursor:pointer;
-  display:flex;flex-direction:column;justify-content:center;
-  -webkit-tap-highlight-color:transparent;user-select:none}
-
-/* ---------- Wide: horizontal flow ---------- */
-.stage{padding:6cqw;gap:4.5cqw}
-h1{margin:0;font-family:var(--head);font-weight:700;font-size:2.8cqw;letter-spacing:.01em;line-height:1}
-h1 .ch{display:inline-block;opacity:0;transform:translateY(.3em)}
-h1 .ch.sp{display:inline}
-h1 .ch.on{opacity:1;transform:none;transition:opacity .35s ease, transform .5s cubic-bezier(.2,.8,.2,1)}
-
-.flow{display:flex;align-items:stretch}
-.step{flex:1 1 0;min-width:0;padding:1.7cqw 1.4cqw 1.8cqw;border-top:3px solid var(--line);
-  opacity:0;transform:translateY(.8cqw);transition:opacity .4s ease, transform .5s cubic-bezier(.2,.8,.2,1), border-color .4s}
-.step.on{opacity:1;transform:none}
-.step.done{border-top-color:var(--fg)}
-.num{font-family:var(--num);font-weight:400;font-size:max(10px,1.1cqw);color:var(--muted);letter-spacing:.12em;margin-bottom:1.1cqw;transition:color .4s}
-.txt{font-family:var(--card);font-size:2.2cqw;font-weight:700;line-height:1.08;min-height:2.2em}
-.txt .ch{opacity:0}
-.txt .ch.on{opacity:1}
-.txt .ch{position:relative}
-.txt .ch.cur::after{content:"";position:absolute;left:100%;top:.12em;margin-left:.05em;width:.09em;height:.9em;background:var(--accent);animation:blink .8s steps(1) infinite}
-@keyframes blink{50%{opacity:0}}
-.step.final{background:var(--panel)}
-.step.final.done{border-top-color:var(--accent)}
-.step.final.done .txt,.step.final.done .num{color:var(--accent)}
-
-.arrow{flex:0 0 3.6cqw;display:flex;justify-content:center;align-items:flex-start;padding-top:4.9cqw}
-.arrow svg{width:2.4cqw;height:1.4cqw;overflow:visible}
-.arrow path{fill:none;stroke:var(--accent);stroke-width:max(2px,.2cqw);stroke-linecap:round;stroke-linejoin:round;
-  vector-effect:non-scaling-stroke;stroke-dasharray:100;stroke-dashoffset:100;transition:stroke-dashoffset .5s cubic-bezier(.6,0,.2,1)}
-.arrow.on path{stroke-dashoffset:0}
-
-/* ---------- Mobile: vertical flow (600px and below) ---------- */
-@container (max-width: 600px){
-  .stage{padding:max(16px,7cqw);gap:max(22px,6cqw)}
-  h1{font-size:max(20px,5.4cqw)}
-  .flow{flex-direction:column}
-  .step{display:flex;align-items:baseline;gap:max(12px,3cqw);padding:max(12px,2.6cqw) max(14px,3cqw);
-    border-top:0;border-left:3px solid var(--line);transform:translateX(-1.5cqw)}
-  .step.on{transform:none}
-  .step.done{border-left-color:var(--fg)}
-  .step.final.done{border-left-color:var(--accent)}
-  .num{font-size:max(11px,2.6cqw);margin:0;flex:none;width:1.6em;font-variant-numeric:tabular-nums}
-  .txt{font-size:max(16px,4.4cqw);min-height:0;line-height:1.2}
-  .arrow{flex:none;padding:0;justify-content:flex-start;padding-left:max(18px,3.6cqw);height:max(26px,5.4cqw);align-items:center}
-  .arrow svg{width:max(16px,3cqw);height:max(22px,4.4cqw)}
-  .arrow path{stroke-width:2.5px}
-}
-
-@media (prefers-reduced-motion: reduce){ .txt .ch.cur::after{animation:none} }
-</style>
 </head>
 <body>
-<div class="wrap">
-  <div class="stage" id="stage" role="img" aria-label="The ideal flow: Supplier price changes, then ingredient cost updates, then recipe cost changes, then margin moves outside target, then the team reviews the product. Click to replay.">
-    <h1 id="h1">THE IDEAL FLOW</h1>
-    <div class="flow" id="flow"></div>
+<style>
+@font-face{font-family:"SIF Head";src:url("https://www.baristahustle.com/webfont/Head-Bold.ttf") format("truetype");font-weight:700;font-display:block}
+@font-face{font-family:"SIF NoBH";src:url("https://www.baristahustle.com/webfont/NoBH-Bold.ttf") format("truetype");font-weight:700;font-display:block}
+@font-face{font-family:"SIF NoBH";src:url("https://www.baristahustle.com/webfont/NoBH-Regular.ttf") format("truetype");font-weight:400;font-display:block}
+/* Scalzo Ideal Flow. Every id, class, variable, font name and keyframe is prefixed "sif-",
+   and every rule is scoped under #sif-root, so it can sit inside another website without clashing.
+   Wide: title above five steps in a row. 600px and below: steps stacked, joined by down arrows. */
+#sif-root{
+  --sif-bg:#161d20;
+  --sif-panel:#1d2629;
+  --sif-line:#33403f;
+  --sif-fg:#f4f4f4;
+  --sif-muted:#93a0a3;
+  --sif-accent:#c73353;
+  --sif-head:"SIF Head", Arial, sans-serif;
+  --sif-card:"SIF NoBH", Arial, sans-serif;
+  --sif-num:"SIF NoBH", Arial, sans-serif;
+  display:block;width:100%;max-width:2000px;margin-inline:auto;container-type:inline-size;
+  color:var(--sif-fg);font-family:var(--sif-card);text-align:left;color-scheme:dark;
+}
+#sif-root, #sif-root *{box-sizing:border-box}
+#sif-root .sif-stage{position:relative;width:100%;margin:0;background:var(--sif-bg);border-radius:6px;overflow:hidden;cursor:pointer;
+  display:flex;flex-direction:column;justify-content:center;padding:6cqw;gap:4.5cqw;
+  -webkit-tap-highlight-color:transparent;user-select:none}
+
+#sif-root .sif-title{margin:0;padding:0;border:0;color:var(--sif-fg);font-family:var(--sif-head);font-weight:700;font-size:2.8cqw;
+  letter-spacing:.01em;line-height:1;text-transform:none}
+#sif-root .sif-title .sif-ch{display:inline-block;opacity:0;transform:translateY(.3em)}
+#sif-root .sif-title .sif-ch.sif-sp{display:inline}
+#sif-root .sif-title .sif-ch.sif-on{opacity:1;transform:none;transition:opacity .35s ease, transform .5s cubic-bezier(.2,.8,.2,1)}
+
+#sif-root .sif-flow{display:flex;align-items:stretch;margin:0;padding:0}
+#sif-root .sif-step{flex:1 1 0;min-width:0;margin:0;padding:1.7cqw 1.4cqw 1.8cqw;border:0;border-top:3px solid var(--sif-line);
+  opacity:0;transform:translateY(.8cqw);transition:opacity .4s ease, transform .5s cubic-bezier(.2,.8,.2,1), border-color .4s}
+#sif-root .sif-step.sif-on{opacity:1;transform:none}
+#sif-root .sif-step.sif-done{border-top-color:var(--sif-fg)}
+#sif-root .sif-num{font-family:var(--sif-num);font-weight:400;font-size:max(10px,1.1cqw);line-height:1.2;color:var(--sif-muted);
+  letter-spacing:.12em;margin:0 0 1.1cqw;transition:color .4s}
+#sif-root .sif-txt{font-family:var(--sif-card);font-size:2.2cqw;font-weight:700;line-height:1.08;min-height:2.2em;margin:0;color:var(--sif-fg)}
+#sif-root .sif-txt .sif-ch{position:relative;opacity:0}
+#sif-root .sif-txt .sif-ch.sif-on{opacity:1}
+#sif-root .sif-txt .sif-ch.sif-cur::after{content:"";position:absolute;left:100%;top:.12em;margin-left:.05em;width:.09em;height:.9em;
+  background:var(--sif-accent);animation:sif-blink .8s steps(1) infinite}
+@keyframes sif-blink{50%{opacity:0}}
+#sif-root .sif-step.sif-final{background:var(--sif-panel)}
+#sif-root .sif-step.sif-final.sif-done{border-top-color:var(--sif-accent)}
+#sif-root .sif-step.sif-final.sif-done .sif-txt,
+#sif-root .sif-step.sif-final.sif-done .sif-num{color:var(--sif-accent)}
+
+#sif-root .sif-arrow{flex:0 0 3.6cqw;display:flex;justify-content:center;align-items:flex-start;padding:4.9cqw 0 0;margin:0}
+#sif-root .sif-arrow svg{display:block;width:2.4cqw;height:1.4cqw;overflow:visible}
+#sif-root .sif-arrow path{fill:none;stroke:var(--sif-accent);stroke-width:max(2px,.2cqw);stroke-linecap:round;stroke-linejoin:round;
+  vector-effect:non-scaling-stroke;stroke-dasharray:100;stroke-dashoffset:100;transition:stroke-dashoffset .5s cubic-bezier(.6,0,.2,1)}
+#sif-root .sif-arrow.sif-on path{stroke-dashoffset:0}
+
+@container (max-width: 600px){
+  #sif-root .sif-stage{padding:max(16px,7cqw);gap:max(22px,6cqw)}
+  #sif-root .sif-title{font-size:max(20px,5.4cqw)}
+  #sif-root .sif-flow{flex-direction:column}
+  #sif-root .sif-step{display:flex;align-items:baseline;gap:max(12px,3cqw);padding:max(12px,2.6cqw) max(14px,3cqw);
+    border-top:0;border-left:3px solid var(--sif-line);transform:translateX(-1.5cqw)}
+  #sif-root .sif-step.sif-on{transform:none}
+  #sif-root .sif-step.sif-done{border-left-color:var(--sif-fg)}
+  #sif-root .sif-step.sif-final.sif-done{border-left-color:var(--sif-accent)}
+  #sif-root .sif-num{font-size:max(11px,2.6cqw);margin:0;flex:none;width:1.6em;font-variant-numeric:tabular-nums}
+  #sif-root .sif-txt{font-size:max(16px,4.4cqw);min-height:0;line-height:1.2}
+  #sif-root .sif-arrow{flex:none;padding:0 0 0 max(18px,3.6cqw);justify-content:flex-start;height:max(26px,5.4cqw);align-items:center}
+  #sif-root .sif-arrow svg{width:max(16px,3cqw);height:max(22px,4.4cqw)}
+  #sif-root .sif-arrow path{stroke-width:2.5px}
+}
+
+@media (prefers-reduced-motion: reduce){ #sif-root .sif-txt .sif-ch.sif-cur::after{animation:none} }
+</style>
+
+<div id="sif-root" class="sif-root">
+  <div class="sif-stage" id="sif-stage" role="img" aria-label="The ideal flow: Supplier price changes, then ingredient cost updates, then recipe cost changes, then margin moves outside target, then the team reviews the product. Click to replay.">
+    <h2 class="sif-title" id="sif-title">THE IDEAL FLOW</h2>
+    <div class="sif-flow" id="sif-flow"></div>
   </div>
 </div>
 
 <script>
-const STEPS = [
-  "Supplier price changes",
-  "Ingredient cost updates",
-  "Recipe cost changes",
-  "Margin moves outside target",
-  "The team reviews the product"
-];
-const stage = document.getElementById('stage');
-const flow = document.getElementById('flow');
-const h1 = document.getElementById('h1');
-const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-const RIGHT = 'M2 14 H40 M30 5 L40 14 L30 23';
-const DOWN  = 'M14 2 V40 M5 30 L14 40 L23 30';
+(function(){
+  var STEPS = [
+    "Supplier price changes",
+    "Ingredient cost updates",
+    "Recipe cost changes",
+    "Margin moves outside target",
+    "The team reviews the product"
+  ];
+  var stage = document.getElementById('sif-stage');
+  var flow = document.getElementById('sif-flow');
+  var title = document.getElementById('sif-title');
+  if (!stage || !flow || !title) return;
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var RIGHT = 'M2 14 H40 M30 5 L40 14 L30 23';
+  var DOWN  = 'M14 2 V40 M5 30 L14 40 L23 30';
+  var SVGNS = 'http://www.w3.org/2000/svg';
 
-function split(el, text){
-  el.textContent = '';
-  for (const c of text){
-    const s = document.createElement('span');
-    s.className = 'ch' + (c === ' ' ? ' sp' : '');
-    s.textContent = c;
-    el.appendChild(s);
+  function split(el, text){
+    el.textContent = '';
+    Array.from(text).forEach(function(c){
+      var s = document.createElement('span');
+      s.className = 'sif-ch' + (c === ' ' ? ' sif-sp' : '');
+      s.textContent = c;
+      el.appendChild(s);
+    });
+    return Array.from(el.children);
   }
-  return [...el.children];
-}
 
-function arrowShape(){
-  const vertical = stage.clientWidth <= 600;
-  flow.querySelectorAll('.arrow svg').forEach(svg => {
-    svg.setAttribute('viewBox', vertical ? '0 0 28 42' : '0 0 42 28');
-    svg.querySelector('path').setAttribute('d', vertical ? DOWN : RIGHT);
-  });
-}
-new ResizeObserver(arrowShape).observe(stage);
+  function arrowShape(){
+    var vertical = stage.clientWidth <= 600;
+    flow.querySelectorAll('.sif-arrow svg').forEach(function(svg){
+      svg.setAttribute('viewBox', vertical ? '0 0 28 42' : '0 0 42 28');
+      svg.querySelector('path').setAttribute('d', vertical ? DOWN : RIGHT);
+    });
+  }
+  if (window.ResizeObserver) new ResizeObserver(arrowShape).observe(stage);
 
-function build(){
-  flow.innerHTML = '';
-  STEPS.forEach((t, i) => {
-    if (i){
-      const a = document.createElement('div');
-      a.className = 'arrow';
-      a.innerHTML = '<svg preserveAspectRatio="xMidYMid meet"><path pathLength="100"/></svg>';
-      flow.appendChild(a);
+  function build(){
+    flow.textContent = '';
+    STEPS.forEach(function(t, i){
+      if (i){
+        var a = document.createElement('div');
+        a.className = 'sif-arrow';
+        a.id = 'sif-arrow-' + i;
+        var svg = document.createElementNS(SVGNS, 'svg');
+        svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+        var path = document.createElementNS(SVGNS, 'path');
+        path.setAttribute('pathLength', '100');
+        svg.appendChild(path); a.appendChild(svg); flow.appendChild(a);
+      }
+      var s = document.createElement('div');
+      s.className = 'sif-step' + (i === STEPS.length - 1 ? ' sif-final' : '');
+      s.id = 'sif-step-' + (i + 1);
+      var n = document.createElement('div');
+      n.className = 'sif-num'; n.id = 'sif-num-' + (i + 1);
+      n.textContent = String(i + 1).padStart(2, '0');
+      var x = document.createElement('div');
+      x.className = 'sif-txt'; x.id = 'sif-txt-' + (i + 1);
+      s.appendChild(n); s.appendChild(x); flow.appendChild(s);
+    });
+    arrowShape();
+  }
+
+  var timers = [];
+  function at(ms, fn){ timers.push(setTimeout(fn, ms)); }
+
+  function play(){
+    timers.forEach(clearTimeout); timers = [];
+    build();
+    var titleChars = split(title, 'THE IDEAL FLOW');
+    var steps = Array.from(flow.querySelectorAll('.sif-step'));
+    var arrows = Array.from(flow.querySelectorAll('.sif-arrow'));
+    var stepChars = steps.map(function(s, i){ return split(s.querySelector('.sif-txt'), STEPS[i]); });
+
+    if (reduce){
+      titleChars.forEach(function(c){ c.classList.add('sif-on'); });
+      steps.forEach(function(s, i){ s.classList.add('sif-on', 'sif-done'); stepChars[i].forEach(function(c){ c.classList.add('sif-on'); }); });
+      arrows.forEach(function(a){ a.classList.add('sif-on'); });
+      return;
     }
-    const s = document.createElement('div');
-    s.className = 'step' + (i === STEPS.length - 1 ? ' final' : '');
-    s.innerHTML = `<div class="num">${String(i+1).padStart(2,'0')}</div><div class="txt"></div>`;
-    flow.appendChild(s);
-  });
-  arrowShape();
-}
 
-let timers = [];
-const at = (ms, fn) => timers.push(setTimeout(fn, ms));
+    var t = 300;
+    titleChars.forEach(function(c, i){ at(t + i * 45, function(){ c.classList.add('sif-on'); }); });
+    t += titleChars.length * 45 + 600;
 
-function play(){
-  timers.forEach(clearTimeout); timers = [];
-  build();
-  const titleChars = split(h1, 'THE IDEAL FLOW');
-  const steps = [...flow.querySelectorAll('.step')];
-  const arrows = [...flow.querySelectorAll('.arrow')];
-  const stepChars = steps.map((s, i) => split(s.querySelector('.txt'), STEPS[i]));
-
-  if (reduce){
-    titleChars.forEach(c => c.classList.add('on'));
-    steps.forEach((s, i) => { s.classList.add('on','done'); stepChars[i].forEach(c => c.classList.add('on')); });
-    arrows.forEach(a => a.classList.add('on'));
-    return;
+    steps.forEach(function(s, i){
+      if (i){ var a = arrows[i - 1]; at(t, function(){ a.classList.add('sif-on'); }); t += 460; }
+      at(t, function(){ s.classList.add('sif-on'); });
+      t += 220;
+      var chars = stepChars[i];
+      chars.forEach(function(c, j){
+        at(t + j * 38, function(){ if (j) chars[j - 1].classList.remove('sif-cur'); c.classList.add('sif-on', 'sif-cur'); });
+      });
+      t += chars.length * 38 + 160;
+      at(t, function(){ chars[chars.length - 1].classList.remove('sif-cur'); s.classList.add('sif-done'); });
+      t += 380;
+    });
+    at(t + 4500, play); // loop
   }
 
-  let t = 300;
-  titleChars.forEach((c, i) => at(t + i * 45, () => c.classList.add('on')));
-  t += titleChars.length * 45 + 600;
-
-  steps.forEach((s, i) => {
-    if (i){ const a = arrows[i-1]; at(t, () => a.classList.add('on')); t += 460; }
-    at(t, () => s.classList.add('on'));
-    t += 220;
-    const chars = stepChars[i];
-    chars.forEach((c, j) => at(t + j * 38, () => { if (j) chars[j-1].classList.remove('cur'); c.classList.add('on','cur'); }));
-    t += chars.length * 38 + 160;
-    at(t, () => { chars[chars.length-1].classList.remove('cur'); s.classList.add('done'); });
-    t += 380;
-  });
-  at(t + 4500, play); // loop
-}
-
-stage.addEventListener('click', play);
-(document.fonts ? document.fonts.ready : Promise.resolve()).then(play);
+  stage.addEventListener('click', play);
+  (document.fonts ? document.fonts.ready : Promise.resolve()).then(play);
+})();
 </script>
 </body>
 </html>

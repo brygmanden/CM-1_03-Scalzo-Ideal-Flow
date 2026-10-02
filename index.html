@@ -7,10 +7,10 @@
 </head>
 <body>
 <style>
-@font-face{font-family:"SIF Head";src:url("https://www.baristahustle.com/webfont/Head-Bold.ttf") format("truetype");font-weight:700;font-display:block}
-@font-face{font-family:"SIF NoBH";src:url("https://www.baristahustle.com/webfont/NoBH-Bold.ttf") format("truetype");font-weight:700;font-display:block}
-@font-face{font-family:"SIF NoBH";src:url("https://www.baristahustle.com/webfont/NoBH-Regular.ttf") format("truetype");font-weight:400;font-display:block}
-/* Scalzo Ideal Flow. Every id, class, variable, font name and keyframe is prefixed "sif-",
+@font-face{font-family:"Head";src:url("https://www.baristahustle.com/webfont/Head-Bold.ttf") format("truetype");font-weight:700;font-display:block}
+@font-face{font-family:"NoBH";src:url("https://www.baristahustle.com/webfont/NoBH-Bold.ttf") format("truetype");font-weight:700;font-display:block}
+@font-face{font-family:"NoBH";src:url("https://www.baristahustle.com/webfont/NoBH-Regular.ttf") format("truetype");font-weight:400;font-display:block}
+/* Scalzo Ideal Flow. Every id, class, variable and keyframe is prefixed "sif-" (font names keep their original names),
    and every rule is scoped under #sif-root, so it can sit inside another website without clashing.
    Wide: title above five steps in a row. 600px and below: steps stacked, joined by down arrows. */
 #sif-root{
@@ -20,9 +20,9 @@
   --sif-fg:#f4f4f4;
   --sif-muted:#93a0a3;
   --sif-accent:#c73353;
-  --sif-head:"SIF Head", Arial, sans-serif;
-  --sif-card:"SIF NoBH", Arial, sans-serif;
-  --sif-num:"SIF NoBH", Arial, sans-serif;
+  --sif-head:"Head", Arial, sans-serif;
+  --sif-card:"NoBH", Arial, sans-serif;
+  --sif-num:"NoBH", Arial, sans-serif;
   display:block;width:100%;max-width:2000px;margin-inline:auto;container-type:inline-size;
   color:var(--sif-fg);font-family:var(--sif-card);text-align:left;color-scheme:dark;
 }

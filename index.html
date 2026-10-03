@@ -77,6 +77,8 @@
   #sif-root .sif-arrow path{stroke-width:2.5px}
 }
 
+#sif-root .sif-instant, #sif-root .sif-instant *{transition:none!important}
+
 @media (prefers-reduced-motion: reduce){ #sif-root .sif-txt .sif-ch.sif-cur::after{animation:none} }
 </style>
 
@@ -152,10 +154,25 @@
   }
 
   var timers = [];
+  var running = false;
   function at(ms, fn){ timers.push(setTimeout(fn, ms)); }
+
+  // Jump straight to the finished frame and stay there (no loop).
+  function showFinal(){
+    timers.forEach(clearTimeout); timers = [];
+    running = false;
+    stage.classList.add('sif-instant');
+    Array.from(stage.querySelectorAll('.sif-ch, .sif-step, .sif-arrow')).forEach(function(el){
+      el.classList.add('sif-on');
+      el.classList.remove('sif-cur');
+    });
+    Array.from(stage.querySelectorAll('.sif-step')).forEach(function(s){ s.classList.add('sif-done'); });
+  }
 
   function play(){
     timers.forEach(clearTimeout); timers = [];
+    stage.classList.remove('sif-instant');
+    running = true;
     build();
     var titleChars = split(title, 'THE IDEAL FLOW');
     var steps = Array.from(flow.querySelectorAll('.sif-step'));
@@ -163,6 +180,7 @@
     var stepChars = steps.map(function(s, i){ return split(s.querySelector('.sif-txt'), STEPS[i]); });
 
     if (reduce){
+      running = false;
       titleChars.forEach(function(c){ c.classList.add('sif-on'); });
       steps.forEach(function(s, i){ s.classList.add('sif-on', 'sif-done'); stepChars[i].forEach(function(c){ c.classList.add('sif-on'); }); });
       arrows.forEach(function(a){ a.classList.add('sif-on'); });
@@ -185,10 +203,12 @@
       at(t, function(){ chars[chars.length - 1].classList.remove('sif-cur'); s.classList.add('sif-done'); });
       t += 380;
     });
+    at(t, function(){ running = false; });
     at(t + 4500, play); // loop
   }
 
-  stage.addEventListener('click', play);
+  // Click while animating: stop on the final frame. Click otherwise: restart.
+  stage.addEventListener('click', function(){ if (running) showFinal(); else play(); });
   (document.fonts ? document.fonts.ready : Promise.resolve()).then(play);
 })();
 </script>
